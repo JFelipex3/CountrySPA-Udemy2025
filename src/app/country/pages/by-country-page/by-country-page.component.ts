@@ -7,4 +7,9 @@ import { ListComponent } from "../../components/list/list.component";
   imports: [SearchInputComponent, ListComponent],
   templateUrl: './by-country-page.component.html',
 })
-export class ByCountryPageComponent { }
+export class ByCountryPageComponent {
+
+  onSearch( query: string ) {
+    console.log({query});
+  }
+}
