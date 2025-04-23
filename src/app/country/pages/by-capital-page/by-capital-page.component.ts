@@ -1,41 +1,55 @@
-import { Component, inject, signal } from '@angular/core';
-import { ListComponent } from "../../components/list/list.component";
+import { Component, inject, resource, signal } from '@angular/core';
 import { SearchInputComponent } from "../../components/search-input/search-input.component";
 import { CountryService } from '../../services/country.service';
-import type { Country } from '../../interfaces/country.interface';
+import { firstValueFrom } from 'rxjs';
+import { ListComponent } from "../../components/list/list.component";
 
 @Component({
   selector: 'app-by-capital-page',
-  imports: [ListComponent, SearchInputComponent],
+  imports: [SearchInputComponent, ListComponent],
   templateUrl: './by-capital-page.component.html',
 })
 export class ByCapitalPageComponent {
 
   countryServices = inject(CountryService);
+  query = signal<string>('');
 
-  isLoading = signal(false);
-  isError = signal<string | null>(null);
-  countries = signal<Country[]>([]);
+  countryResourse = resource({
+    request: () => ({ query: this.query()}),
+    loader: async({request}) => {
+      if (!request.query) return [];
 
-  onSearch( query: string ) {
-    console.log({query});
+      return await firstValueFrom(
+        this.countryServices.searchByCapital(request.query)
+      );
+    }
+  })
 
-    if (this.isLoading()) return;
+  // isLoading = signal(false);
+  // isError = signal<string | null>(null);
+  // countries = signal<Country[]>([]);
 
-    this.isLoading.set(true);
-    this.isError.set(null);
+  // onSearch( query: string ) {
+  //   console.log({query});
 
-    this.countryServices.searchByCapital(query)
-      .subscribe({
-        next: (countries) => {
-          this.isLoading.set(false);
-          this.countries.set(countries);
-        },
-        error: (err) => {
-          this.isLoading.set(false);
-          this.countries.set([]);
-          this.isError.set(err);
-        }
-      });
-  }
+  //   if (this.isLoading()) return;
+
+  //   this.isLoading.set(true);
+  //   this.isError.set(null);
+
+  //   this.countryServices.searchByCapital(query)
+  //     .subscribe({
+  //       next: (countries) => {
+  //         this.isLoading.set(false);
+  //         this.countries.set(countries);
+  //       },
+  //       error: (err) => {
+  //         this.isLoading.set(false);
+  //         this.countries.set([]);
+  //         this.isError.set(err);
+  //       }
+  //     });
+  // }
+
+
 }
