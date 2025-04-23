@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { SearchInputComponent } from "../../components/search-input/search-input.component";
 import { ListComponent } from "../../components/list/list.component";
+import { Country } from '../../interfaces/country.interface';
 
 @Component({
   selector: 'app-by-country-page',
@@ -8,6 +9,8 @@ import { ListComponent } from "../../components/list/list.component";
   templateUrl: './by-country-page.component.html',
 })
 export class ByCountryPageComponent {
+
+  countries = signal<Country[]>([]);
 
   onSearch( query: string ) {
     console.log({query});
