@@ -21,7 +21,7 @@
           <td>{{ country.capital }}</td>
           <td><span class="badge badge-secondary">{{ country.population | number }}</span></td>
           <td>
-            <a class="link-primary cursor-pointer">Más información</a>
+            <a class="link-primary cursor-pointer" [routerLink]="['/country/by', country.cca2]" routerLinkActive="router-link-active" >Más información</a>
           </td>
         </tr>
       }

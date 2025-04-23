@@ -14,7 +14,7 @@ export class ByCapitalPageComponent {
   countryServices = inject(CountryService);
   query = signal<string>('');
 
-  countryResourse = resource({
+  countryResource = resource({
     request: () => ({ query: this.query()}),
     loader: async({request}) => {
       if (!request.query) return [];
