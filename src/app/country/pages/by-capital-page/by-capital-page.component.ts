@@ -1,8 +1,9 @@
 import { Component, inject, resource, signal } from '@angular/core';
 import { SearchInputComponent } from "../../components/search-input/search-input.component";
 import { CountryService } from '../../services/country.service';
-import { firstValueFrom } from 'rxjs';
 import { ListComponent } from "../../components/list/list.component";
+import { Country } from '../../interfaces/country.interface';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-by-capital-page',
@@ -23,7 +24,7 @@ export class ByCapitalPageComponent {
         this.countryServices.searchByCapital(request.query)
       );
     }
-  })
+  });
 
   // isLoading = signal(false);
   // isError = signal<string | null>(null);
@@ -53,3 +54,4 @@ export class ByCapitalPageComponent {
 
 
 }
+

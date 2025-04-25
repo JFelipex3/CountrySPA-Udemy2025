@@ -4,6 +4,7 @@ import { ListComponent } from "../../components/list/list.component";
 import { CountryService } from '../../services/country.service';
 import { firstValueFrom } from 'rxjs';
 
+
 @Component({
   selector: 'app-by-country-page',
   imports: [SearchInputComponent, ListComponent],
@@ -11,17 +12,19 @@ import { firstValueFrom } from 'rxjs';
 })
 export class ByCountryPageComponent {
 
-  countryService = inject(CountryService);
+  countryServices = inject(CountryService);
   query = signal<string>('');
 
   countryResource = resource({
-    request: () => ({ query: this.query() }),
-    loader: async ({ request }) => {
+    request: () => ({ query: this.query()}),
+    loader: async({request}) => {
       if (!request.query) return [];
 
       return await firstValueFrom(
-        this.countryService.searchByCountry(request.query)
+        this.countryServices.searchByCountry(request.query)
       );
     }
-  })
+  });
+
 }
+
