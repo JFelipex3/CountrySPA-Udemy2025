@@ -15,6 +15,8 @@ export class CountryService {
   private http = inject(HttpClient);
   // Map para par valor v/s Set que almacena valores únicos
   private queryCacheCapital = new Map<string, Country[]>();
+  private queryCacheCountry = new Map<string, Country[]>();
+  private queryCacheRegion = new Map<string, Country[]>();
 
   searchByCapital( query: string ): Observable<Country[]> {
     const lowerCaseQuery = query.toLowerCase();
@@ -38,11 +40,17 @@ export class CountryService {
 
   searchByCountry( query: string ): Observable<Country[]> {
     const lowerCaseQuery = query.toLowerCase();
+
+    if (this.queryCacheCountry.has(lowerCaseQuery)) {
+      return of(this.queryCacheCountry.get(lowerCaseQuery) as Country[] ?? []);
+    }
+
     const url = `${API_URL}/name/${query}`;
 
     return this.http.get<RESTCountry[]>(url)
       .pipe(
         map( restCountries => CountryMapper.mapRestCountryArrayToCountryArray(restCountries) ),
+        tap( countries => this.queryCacheCountry.set(lowerCaseQuery, countries) ),
         //delay( 3000 ),
         catchError( error => {
           console.log('Error fetching ', error);
@@ -61,6 +69,24 @@ export class CountryService {
         catchError( error => {
           console.log('Error fetching ', error);
           return throwError( () => new Error(`No se pudo obtener países con ese código ${code}`) );
+        })
+      );
+  }
+
+  searchByRegion( region: string ): Observable<Country[]> {
+    const url = `${API_URL}/region/${region}`;
+
+    if (this.queryCacheRegion.has(region)) {
+      return of(this.queryCacheRegion.get(region) as Country[] ?? []);
+    }
+
+    return this.http.get<RESTCountry[]>(url)
+      .pipe(
+        map( restCountries => CountryMapper.mapRestCountryArrayToCountryArray(restCountries) ),
+        tap( countries => this.queryCacheRegion.set(region, countries) ),
+        catchError( error => {
+          console.log('Error fetching ', error);
+          return throwError( () => new Error(`No se pudo obtener países de la región ${region}`) );
         })
       );
   }
