@@ -1,5 +1,12 @@
 <section class="flex flex-row gap-2 mt-2">
-  <input type="text" class="input input-bordered mr-2 w-56" [placeholder]="placeholder()" autofocus #txtSearch (keyup.enter)="value.emit(txtSearch.value)" />
+  <input type="text"
+    class="input input-bordered mr-2 w-56"
+    [placeholder]="placeholder()"
+    autofocus
+    #txtSearch
+    (keyup.enter)="value.emit(txtSearch.value)"
+    (keyup)="inputValue.set(txtSearch.value)"
+  />
   <!-- Se puede crear metodo en caso de querer realizar validaciones, en este caso solo se quiere emitir el valor, se utiliza el value.emit() -->
   <button class="btn btn-primary" (click)="value.emit(txtSearch.value)">Buscar</button>
 </section>
