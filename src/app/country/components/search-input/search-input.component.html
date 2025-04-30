@@ -6,6 +6,7 @@
     #txtSearch
     (keyup.enter)="value.emit(txtSearch.value)"
     (keyup)="inputValue.set(txtSearch.value)"
+    [value]="inputValue()"
   />
   <!-- Se puede crear metodo en caso de querer realizar validaciones, en este caso solo se quiere emitir el valor, se utiliza el value.emit() -->
   <button class="btn btn-primary" (click)="value.emit(txtSearch.value)">Buscar</button>

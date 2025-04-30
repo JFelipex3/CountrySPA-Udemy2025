@@ -1,4 +1,4 @@
-import { Component, effect, input, output, signal } from '@angular/core';
+import { Component, effect, input, linkedSignal, output, signal } from '@angular/core';
 
 @Component({
   selector: 'country-search-input',
@@ -8,10 +8,13 @@ import { Component, effect, input, output, signal } from '@angular/core';
 export class SearchInputComponent {
 
   placeholder = input('Buscar');
-  value = output<string>();
   debounceTime = input<number>(300);
+  initialValue = input<string>('');
 
-  inputValue = signal<string>('');
+  value = output<string>();
+
+  // Para señal que debe ser inicializada se usa linkedSignal
+  inputValue = linkedSignal<string>(() => this.initialValue());
 
   dbounceEffect = effect( (onCleanup) => {
     const value = this.inputValue();

@@ -1,9 +1,9 @@
-import { Component, inject, resource, signal } from '@angular/core';
+import { Component, inject, linkedSignal, resource, signal } from '@angular/core';
 import { SearchInputComponent } from "../../components/search-input/search-input.component";
 import { CountryService } from '../../services/country.service';
 import { ListComponent } from "../../components/list/list.component";
-import { Country } from '../../interfaces/country.interface';
 import { firstValueFrom } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-by-capital-page',
@@ -13,12 +13,26 @@ import { firstValueFrom } from 'rxjs';
 export class ByCapitalPageComponent {
 
   countryServices = inject(CountryService);
-  query = signal<string>('');
+
+  activatedRoute = inject(ActivatedRoute);
+  router = inject(Router);
+
+  queryParam = this.activatedRoute.snapshot.queryParamMap.get('query') ?? '';
+
+  query = linkedSignal<string>(() => this.queryParam);
 
   countryResource = resource({
     request: () => ({ query: this.query()}),
     loader: async({request}) => {
       if (!request.query) return [];
+
+      // Define los parameters de la URL navegando a la nueva página
+      this.router.navigate(['/country/by-capital'], {
+        queryParams: {
+          // Se pueden agregar más parámetros
+          query: request.query
+        }
+      });
 
       return await firstValueFrom(
         this.countryServices.searchByCapital(request.query)
