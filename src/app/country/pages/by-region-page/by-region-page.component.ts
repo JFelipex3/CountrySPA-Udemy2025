@@ -1,10 +1,22 @@
 import { Component, inject, linkedSignal, resource, signal } from '@angular/core';
 import { ListComponent } from "../../components/list/list.component";
-import type { Country } from '../../interfaces/country.interface';
 import { CountryService } from '../../services/country.service';
 import { Region } from '../../interfaces/region.type';
 import { firstValueFrom } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+
+function validateQueryParam( queryParam: string): Region {
+  const validRegions: Record<string, Region> = {
+    africa: 'Africa',
+    americas: 'Americas',
+    asia: 'Asia',
+    europe: 'Europe',
+    oceania: 'Oceania',
+    antarctic: 'Antarctic'
+  };
+
+  return validRegions[queryParam.toLowerCase()] || 'Africa';
+}
 
 @Component({
   selector: 'app-by-region-page',
@@ -29,9 +41,7 @@ export class ByRegionPageComponent {
 
   regionParam = this.activatedRoute.snapshot.queryParamMap.get('region') ?? '';
 
-  selectedRegion = linkedSignal<Region | null>( () =>
-    this.regions.includes(this.regionParam as Region) ? this.regionParam as Region : null
-  );
+  selectedRegion = linkedSignal<Region | null>( () => validateQueryParam(this.regionParam) );
 
   selectRegion( region: Region ) {
     this.selectedRegion.set(region);
